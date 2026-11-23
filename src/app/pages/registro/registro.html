@@ -1,0 +1,75 @@
+<div class="container min-vh-100 d-flex align-items-center justify-content-center py-4">
+  <div class="card shadow-sm w-100" style="max-width: 450px">
+    <div class="card-body p-4">
+      <h1 class="h4 text-center mb-4">Crear cuenta</h1>
+
+      @if (exito()) {
+        <div class="alert alert-success" role="alert">
+          ¡Cuenta creada con éxito! Ya puedes iniciar sesión.
+        </div>
+        <a routerLink="/login" class="btn btn-primary w-100">Ir a iniciar sesión</a>
+      } @else {
+        @if (error()) {
+          <div class="alert alert-danger py-2" role="alert">{{ error() }}</div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input id="nombre" type="text" class="form-control" formControlName="nombre"
+                     [class.is-invalid]="invalido('nombre')" />
+              <div class="invalid-feedback">Obligatorio (máx. 50 caracteres).</div>
+            </div>
+            <div class="col-6 mb-3">
+              <label for="appat" class="form-label">Apellido paterno</label>
+              <input id="appat" type="text" class="form-control" formControlName="appat"
+                     [class.is-invalid]="invalido('appat')" />
+              <div class="invalid-feedback">Obligatorio (máx. 50 caracteres).</div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input id="email" type="email" class="form-control" formControlName="email"
+                   autocomplete="email" [class.is-invalid]="invalido('email')" />
+            <div class="invalid-feedback">Ingresa un correo válido.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="username" class="form-label">Usuario</label>
+            <input id="username" type="text" class="form-control" formControlName="username"
+                   autocomplete="username" [class.is-invalid]="invalido('username')" />
+            <div class="invalid-feedback">El usuario es obligatorio.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input id="password" type="password" class="form-control" formControlName="password"
+                   autocomplete="new-password" [class.is-invalid]="invalido('password')" />
+            <div class="invalid-feedback">Mínimo 6 caracteres.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="confirmar" class="form-label">Repetir contraseña</label>
+            <input id="confirmar" type="password" class="form-control" formControlName="confirmar"
+                   autocomplete="new-password"
+                   [class.is-invalid]="invalido('confirmar') || (form.touched && form.hasError('noCoinciden'))" />
+            <div class="invalid-feedback">Las contraseñas no coinciden.</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100" [disabled]="cargando()">
+            @if (cargando()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            Registrarme
+          </button>
+        </form>
+
+        <div class="text-center mt-3 small">
+          <a routerLink="/login">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+      }
+    </div>
+  </div>
+</div>

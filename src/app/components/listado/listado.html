@@ -1,0 +1,77 @@
+@if (cargando()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="text-muted mt-2 mb-0">Cargando información...</p>
+  </div>
+} @else if (datos().length === 0) {
+  <div class="text-center text-muted py-5">
+    <i class="bi bi-inbox fs-1 d-block"></i>
+    <p class="mb-0">No hay registros para mostrar.</p>
+  </div>
+} @else {
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          @for (columna of columnas(); track columna.campo) {
+            <th [class.text-end]="columna.alinear === 'end'">{{ columna.titulo }}</th>
+          }
+          @if (acciones().length > 0) {
+            <th class="text-center">Acciones</th>
+          }
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (fila of datos(); track $index) {
+          <tr>
+            @for (columna of columnas(); track columna.campo) {
+              <td [class.text-end]="columna.alinear === 'end'">
+                @switch (columna.tipo) {
+                  @case ('moneda') {
+                    {{ valor(fila, columna) | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}
+                  }
+                  @case ('fecha') {
+                    {{ valor(fila, columna) | date: 'dd/MM/yyyy HH:mm' }}
+                  }
+                  @default {
+                    {{ valor(fila, columna) ?? '—' }}
+                  }
+                }
+              </td>
+            }
+
+            @if (acciones().length > 0) {
+              <td class="text-center text-nowrap">
+                @for (accion of acciones(); track accion.id) {
+                  <button type="button" class="btn btn-sm me-1" [class]="'btn btn-sm me-1 ' + accion.clase"
+                          [title]="accion.titulo" (click)="ejecutar(accion.id, fila)">
+                    <i [class]="accion.icono"></i>
+                  </button>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center p-3 border-top">
+    <small class="text-muted">Total registros: {{ totalElementos() }}</small>
+
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-outline-primary btn-sm"
+              [disabled]="paginaActual() === 0" (click)="anterior()">
+        Anterior
+      </button>
+      <small>Página {{ paginaActual() + 1 }} de {{ totalPaginas() }}</small>
+      <button type="button" class="btn btn-outline-primary btn-sm"
+              [disabled]="paginaActual() >= totalPaginas() - 1" (click)="siguiente()">
+        Siguiente
+      </button>
+    </div>
+  </div>
+}

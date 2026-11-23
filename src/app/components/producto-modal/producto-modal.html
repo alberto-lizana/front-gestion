@@ -1,0 +1,67 @@
+<div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo producto</h5>
+          <button type="button" class="btn-close" aria-label="Cerrar"
+                  [disabled]="guardando()" (click)="cancelado.emit()"></button>
+        </div>
+
+        <div class="modal-body">
+          @if (error()) {
+            <div class="alert alert-danger py-2" role="alert">{{ error() }}</div>
+          }
+
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input id="nombre" type="text" class="form-control" formControlName="nombre"
+                   [class.is-invalid]="invalido('nombre')" />
+            <div class="invalid-feedback">Obligatorio, entre 3 y 125 caracteres.</div>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label for="precio" class="form-label">Precio</label>
+              <input id="precio" type="number" class="form-control" formControlName="precio"
+                     [class.is-invalid]="invalido('precio')" />
+              <div class="invalid-feedback">Debe ser mayor que cero.</div>
+            </div>
+            <div class="col-6 mb-3">
+              <label for="stock" class="form-label">Stock</label>
+              <input id="stock" type="number" class="form-control" formControlName="stock"
+                     [class.is-invalid]="invalido('stock')" />
+              <div class="invalid-feedback">Debe estar entre 1 y 999.</div>
+            </div>
+          </div>
+
+          <div class="mb-1">
+            <label for="tipo" class="form-label">Tipo de producto</label>
+            <select id="tipo" class="form-select" formControlName="nombreTipoProducto"
+                    [class.is-invalid]="invalido('nombreTipoProducto')">
+              <option value="" disabled>Selecciona un tipo</option>
+              @for (t of tipos(); track t.id) {
+                <option [value]="t.nombre">{{ t.nombre }}</option>
+              }
+            </select>
+            <div class="invalid-feedback">Selecciona un tipo de producto.</div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary"
+                  [disabled]="guardando()" (click)="cancelado.emit()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="guardando()">
+            @if (guardando()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            Guardar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show"></div>
